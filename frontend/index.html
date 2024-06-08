@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2; /* Light gray background */
+            color: #333; /* Dark text color */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff; /* White container background */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px; /* Increased width for better table display */
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333; /* Dark text color */
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc; /* Light gray border */
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #message {
+            margin-top: 10px;
+            text-align: center;
+            color: #333; /* Dark text color */
+        }
+        #data-container {
+            display: none;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 12px; /* Increased padding for better spacing */
+            text-align: left;
+            border-bottom: 1px solid #ddd; /* Light gray border */
+            color: #333; /* Dark text color */
+        }
+        th {
+            background-color: #4CAF50; /* Dark green header background */
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Information</h1>
+        <form id="uploadForm">
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="first_name" required><br><br>
+            <label for="last_name">Last Name:</label>
+            <input type="text" id="last_name" name="last_name" required><br><br>
+            <button type="submit">Submit</button>
+        </form>
+
+        <div id="message"></div>
+    </div>
+
+    <div id="data-container" class="container">
+        <h1>Fetched Data</h1>
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                </tr>
+            </thead>
+            <tbody id="data-list"></tbody>
+        </table>
+    </div>
+
+    <button id="fetchButton">Fetch Data</button>
+
+    <script>
+        document.getElementById("uploadForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var formData = new FormData();
+            formData.append("first_name", document.getElementById("first_name").value);
+            formData.append("last_name", document.getElementById("last_name").value);
+
+            fetch("http://34.71.50.188:5000/upload", {
+                method: "POST",
+                body: formData,
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById("message").innerText = "Data entered successfully";
+                } else {
+                    throw new Error("Failed to connect to server");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                document.getElementById("message").innerText = error.message;
+            });
+        });
+
+        document.getElementById("fetchButton").addEventListener("click", function() {
+            fetch("http://34.71.50.188:5000/fetch")
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                } else {
+                    displayData(data.data);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                document.getElementById("message").innerText = error.message;
+            });
+        });
+
+        function displayData(data) {
+            var dataList = document.getElementById("data-list");
+            dataList.innerHTML = "";
+            data.forEach(item => {
+                var row = document.createElement("tr");
+                row.innerHTML = "<td>" + item.first_name + "</td><td>" + item.last_name + "</td>";
+                dataList.appendChild(row);
+            });
+            document.getElementById("data-container").style.display = "block";
+        }
+    </script>
+</body>
+</html>
