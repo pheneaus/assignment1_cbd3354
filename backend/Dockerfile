@@ -5,6 +5,7 @@ FROM python:3.9
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app
+# The file is already optiized as only requrired ones are used 
 COPY aman.py /app
 
 COPY requirements.txt /app
