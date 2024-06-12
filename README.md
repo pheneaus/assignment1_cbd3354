@@ -1,2 +1,2 @@
-"# Assignment 1: Building and Versioning a Web Application" 
-his is a web application developed using Docker, Kubernetes, and GitHub for version control.
+**Building and Versioning a Web Application**
+This project involves developing a web application with a frontend in HTML/JavaScript and a Python backend, deployed using Docker and Kubernetes, and managed with GitHub. It captures user input, processes it, and stores it in a GCP database. The deployment is on Google Kubernetes Engine (GKE) with Docker containers for each component. Version control practices include using branches and pull requests on GitHub.
